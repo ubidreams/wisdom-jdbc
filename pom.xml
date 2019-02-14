@@ -6,15 +6,15 @@
   <parent>
     <groupId>org.wisdom-framework</groupId>
     <artifactId>wisdom-framework</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.10.1-UBIDREAMS</version>
   </parent>
 
   <artifactId>wisdom-jdbc</artifactId>
-  <version>0.10.0-SNAPSHOT</version>
+  <version>0.10.1-UBIDREAMS</version>
 
   <properties>
     <!-- should match Wisdom parent -->
-    <wisdom.version>0.10.0-SNAPSHOT</wisdom.version>
+    <wisdom.version>0.10.1-UBIDREAMS</wisdom.version>
     <wisdom.abstractjdbcdriver.version>${wisdom.version}</wisdom.abstractjdbcdriver.version>
     <!-- components -->
     <openjpa.version>2.4.2</openjpa.version>
@@ -27,7 +27,7 @@
     <postgresql.version>9.4.1212</postgresql.version>
     <sqlite.version>3.16.1</sqlite.version>
     <!-- wisdom drivers modules -->
-    <wisdom.abstractjdbcdriver.version>0.10.0-SNAPSHOT</wisdom.abstractjdbcdriver.version>
+    <wisdom.abstractjdbcdriver.version>0.10.1-UBIDREAMS</wisdom.abstractjdbcdriver.version>
     <wisdom.derby.version>${derby.version}_1-SNAPSHOT</wisdom.derby.version>
     <wisdom.h2.version>${h2.version}_1-SNAPSHOT</wisdom.h2.version>
     <wisdom.hsql.version>${hsql.version}_1-SNAPSHOT</wisdom.hsql.version>

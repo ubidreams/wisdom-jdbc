@@ -113,7 +113,7 @@ Here are the list of the Maven dependencies to use:
         <dependency>
             <groupId>org.wisdom-framework</groupId>
             <artifactId>wisdom-jpa-manager</artifactId>
-            <version>0.10.0-SNAPSHOT</version>
+            <version>0.10.1-UBIDREAMS</version>
         </dependency>
 
         <dependency>
@@ -132,7 +132,7 @@ classes:
 <plugin>
     <groupId>org.wisdom-framework</groupId>
     <artifactId>wisdom-openjpa-enhancer-plugin</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.10.1-UBIDREAMS</version>
     <configuration>
         <includes>**/models/*.class</includes>
         <addDefaultConstructor>true</addDefaultConstructor>
@@ -159,7 +159,7 @@ declare JTA as a library:
 <plugin>
     <groupId>org.wisdom-framework</groupId>
     <artifactId>wisdom-maven-plugin</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
+    <version>0.10.1-UBIDREAMS</version>
     <extensions>true</extensions>
     <configuration>
         <skipGoogleClosure>true</skipGoogleClosure>

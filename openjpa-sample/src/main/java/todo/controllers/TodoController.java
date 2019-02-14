@@ -50,9 +50,8 @@ public class TodoController extends DefaultController {
     @Validate
     public void start() throws HasBeenRollBackException {
         //Populate the db with some default value
-        listCrud.executeTransactionalBlock(new Runnable() {
-            @Override
-            public void run() {
+        listCrud.executeTransactionalBlock(() -> {
+            try {
                 if (listCrud.count() == 0) {
                     logger().info("Adding default item");
                     Todo todo = new Todo();
@@ -81,23 +80,26 @@ public class TodoController extends DefaultController {
                         logger().info("List {} with {} items", list.getName(), list.getTodos().size());
                     }
                 }
+            } catch (HasBeenRollBackException e) {
+                e.printStackTrace();
+                logger().error("HasBeenRollBackException");
             }
         });
 
     }
 
     @Route(method = GET, uri = "/")
-    public Result getList() {
+    public Result getList() throws HasBeenRollBackException {
         return ok(Iterables.toArray(listCrud.findAll(), TodoList.class)).json();
     }
 
     @Route(method = PUT, uri = "/")
-    public Result putList(@Body TodoList list) {
+    public Result putList(@Body TodoList list) throws HasBeenRollBackException {
         return ok(listCrud.save(list)).json();
     }
 
     @Route(method = DELETE, uri = "/{id}")
-    public Result delList(final @Parameter("id") String id) {
+    public Result delList(final @Parameter("id") String id) throws HasBeenRollBackException {
         TodoList todoList = listCrud.findOne(id);
 
         if (todoList == null) {
@@ -110,7 +112,7 @@ public class TodoController extends DefaultController {
     }
 
     @Route(method = GET, uri = "/{id}")
-    public Result getTodos(final @Parameter("id") String id) {
+    public Result getTodos(final @Parameter("id") String id) throws HasBeenRollBackException {
         TodoList todoList = null;
 
         try {
@@ -127,7 +129,7 @@ public class TodoController extends DefaultController {
 
     @Route(method = PUT, uri = "/{id}")
     @Transactional
-    public Result createTodo(final @Parameter("id") String id, @Valid @Body Todo todo) {
+    public Result createTodo(final @Parameter("id") String id, @Valid @Body Todo todo) throws HasBeenRollBackException {
         TodoList todoList = listCrud.findOne(id);
 
         if (todoList == null) {
@@ -147,7 +149,7 @@ public class TodoController extends DefaultController {
 
     @Route(method = POST, uri = "/{id}/{todoId}")
     @Transactional
-    public Result updateTodo(@Parameter("id") String listId, @Parameter("todoId") long todoId, @Valid @Body Todo todo) {
+    public Result updateTodo(@Parameter("id") String listId, @Parameter("todoId") long todoId, @Valid @Body Todo todo) throws HasBeenRollBackException {
         TodoList todoList = listCrud.findOne(listId);
 
         if (todoList == null) {
@@ -173,7 +175,7 @@ public class TodoController extends DefaultController {
 
     @Route(method = DELETE, uri = "/{id}/{todoId}")
     @Transactional
-    public Result delTodo(@Parameter("id") String listId, @Parameter("todoId") long todoId) {
+    public Result delTodo(@Parameter("id") String listId, @Parameter("todoId") long todoId) throws HasBeenRollBackException {
         TodoList todoList = listCrud.findOne(listId);
 
         if (todoList == null) {

@@ -24,6 +24,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.wisdom.api.model.Crud;
+import org.wisdom.api.model.HasBeenRollBackException;
 import org.wisdom.test.parents.Filter;
 import org.wisdom.test.parents.WisdomTest;
 
@@ -55,7 +56,7 @@ public class TodoListIT extends WisdomTest {
     }
 
     @Test
-    public void testManipulation() {
+    public void testManipulation() throws HasBeenRollBackException {
         TodoList list = new TodoList();
         list.setName("my todo list");
         list.setOwner("clement");

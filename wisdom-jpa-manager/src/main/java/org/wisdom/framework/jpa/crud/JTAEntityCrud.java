@@ -21,13 +21,11 @@ package org.wisdom.framework.jpa.crud;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wisdom.api.model.Crud;
-import org.wisdom.api.model.InitTransactionException;
-import org.wisdom.api.model.Repository;
-import org.wisdom.api.model.RollBackHasCauseAnException;
+import org.wisdom.api.model.*;
 
 import javax.persistence.EntityManager;
 import javax.transaction.*;
+import javax.transaction.TransactionManager;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
@@ -111,16 +109,16 @@ public class JTAEntityCrud<T, I extends Serializable> extends AbstractJTACrud<T,
     }
 
     @Override
-    protected <X> X inTransaction(Callable<X> task) {
+    protected <X> X inTransaction(Callable<X> task) throws HasBeenRollBackException {
         boolean transactionBegunLocally = false;
         try {
             Transaction tx = getActiveTransaction();
             if (tx == null) {
-                LOGGER.info("Starting JTA transaction locally");
+                LOGGER.debug("Starting JTA transaction locally");
                 transaction.begin();
                 transactionBegunLocally = true;
             } else {
-                LOGGER.info("Reusing JTA transaction {}", transaction.getTransaction());
+                LOGGER.debug("Reusing JTA transaction {}", transaction.getTransaction());
             }
             X result;
             try {
@@ -137,10 +135,14 @@ public class JTAEntityCrud<T, I extends Serializable> extends AbstractJTACrud<T,
                     LOGGER.error("Mark transaction to rollback only");
                     transaction.getTransaction().setRollbackOnly();
                 }
+                LOGGER.error("e.getClass():"+e.getClass());
+                if(e.getClass() == RollbackException.class){
+                    throw new HasBeenRollBackException(e.getCause());
+                }
                 return null;
             }
             if (transactionBegunLocally) {
-                LOGGER.info("Committing locally started transaction");
+                LOGGER.debug("Committing locally started transaction");
                 transaction.commit();
             }
             return result;
@@ -148,9 +150,13 @@ public class JTAEntityCrud<T, I extends Serializable> extends AbstractJTACrud<T,
             // The transaction management has thrown an exception
             LOGGER.error("[Unit : {}, Entity: {}, " +
                     "Id: {}] - Cannot execute JPA query", pu, entity.getName(), idClass.getName(), e);
+
+            LOGGER.error("e.getClass():"+e.getClass());
+            if(e.getClass() == RollbackException.class){
+                throw new HasBeenRollBackException(e.getCause());
+            }
         }
         return null;
-
     }
 
 
